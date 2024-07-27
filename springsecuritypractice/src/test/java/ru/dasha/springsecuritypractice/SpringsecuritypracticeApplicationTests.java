@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -34,9 +35,23 @@ class SpringsecuritypracticeApplicationTests {
 	}
 	
 	@Test
-	void testAll() throws Exception{
-		mockMvc.perform(get("/api/v1/developers/2")
-                .with(user("admin").authorities(Role.ADMIN.getAuthorities())))
+	void test3() throws Exception{
+		mockMvc.perform(delete("/api/v1/developers/3")
+                .with(user("admin").authorities(Role.ADMIN.getAuthorities()))) 
                 .andExpect(status().isOk());
 	}
+	/*
+	@Test
+	void test4() throws Exception{
+		mockMvc.perform(get("/api/v1/developers")
+                .with(user("user")))
+                .andExpect(status().isOk());
+	}
+	
+	@Test
+	void testAll() throws Exception{
+		mockMvc.perform(delete("/api/v1/developers/2")
+                .with(user("user")))
+                .andExpect(status().isForbidden());
+	}*/
 }

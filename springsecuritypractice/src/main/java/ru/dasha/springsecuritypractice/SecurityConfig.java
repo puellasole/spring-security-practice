@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,15 +18,14 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 	
 	@Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf(AbstractHttpConfigurer::disable)
 	      .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
-	              authorizationManagerRequestMatcherRegistry.requestMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
-	                      .requestMatchers(HttpMethod.POST, "/api/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
-	                      .requestMatchers(HttpMethod.GET, "/api/**").hasAuthority(Permission.DEVELOPERS_READ.getPermission())
+	              authorizationManagerRequestMatcherRegistry
 	                      .requestMatchers("/").permitAll()
 	                      .anyRequest().authenticated())
 	      .httpBasic(Customizer.withDefaults());
@@ -42,12 +42,12 @@ public class SecurityConfig {
 	public UserDetailsService userDetailsService() {
 	    InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
 	    manager.createUser(User.withUsername("user")
-	      .password(passwordEncoder().encode("userPass"))
+	      .password(passwordEncoder().encode("user"))
 	      .authorities(Role.USER.getAuthorities())
 	      .build());
 	    manager.createUser(User.withUsername("admin")
-	      .password(passwordEncoder().encode("adminPass"))
-	      .authorities(Role.USER.getAuthorities())
+	      .password(passwordEncoder().encode("admin"))
+	      .authorities(Role.ADMIN.getAuthorities())
 	      .build());
 	    return manager;
 	}
